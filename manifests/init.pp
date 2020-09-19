@@ -16,7 +16,7 @@ class profile_puppetmaster (
     include profile_puppetmaster::puppetdb
   } else {
     $server_storeconfigs = false
-    $server_reports = 'foreman'
+    $server_reports = 'store'
   }
   class { 'puppet':
     server               => true,
