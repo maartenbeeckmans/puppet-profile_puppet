@@ -7,6 +7,7 @@ class profile_puppetmaster (
   String          $version           = 'latest',
   Boolean         $setup_puppetdb    = false,
   Boolean         $setup_puppetboard = false,
+  Boolean         $manage_firewall   = true,
 ) {
   # @TODO implement prometheus/graphite metrics
   if $setup_puppetdb {
@@ -27,6 +28,12 @@ class profile_puppetmaster (
     server_storeconfigs   => $server_storeconfigs,
     server_reports        => $server_reports,
     server_external_nodes => '',
+  }
+  if $manage_firewall {
+    firewall { '020 allow puppetmaster':
+      dport  => 8140,
+      action => 'accept',
+    }
   }
   if $setup_puppetboard {
     include profile_puppetmaster::puppetboard
