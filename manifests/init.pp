@@ -30,7 +30,7 @@ class profile_puppetmaster (
     server_external_nodes => '',
   }
   if $manage_firewall {
-    firewall { '020 allow puppetmaster':
+    firewall { '08140 allow puppetmaster':
       dport  => 8140,
       action => 'accept',
     }
