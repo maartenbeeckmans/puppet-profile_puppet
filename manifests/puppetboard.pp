@@ -3,8 +3,8 @@
 #
 class profile_puppetmaster::puppetboard {
   class { 'puppetboard':
-    manage_git          => 'latest',
-    manage_virtualenv   => 'latest',
+    manage_git          => true,
+    manage_virtualenv   => true,
     reports_count       => 150,
     offline_mode        => true,
     default_environment => '*',
