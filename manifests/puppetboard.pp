@@ -24,4 +24,8 @@ class profile_puppetmaster::puppetboard {
     vhost_name => 'localhost',
     port       => 80,
   }
+  firewall { '00080 allow puppetboard':
+    dport  => 80,
+    action => 'accept',
+  }
 }
