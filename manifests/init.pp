@@ -4,8 +4,8 @@
 class profile_puppetmaster (
   Boolean         $autosign                 = false,
   Array[String]   $autosign_entries         = [],
-  String          $server_jvm_min_heap_size = '2G'
-  String          $server_jvm_max_heap_size = '2G'
+  String          $server_jvm_min_heap_size = '2G',
+  String          $server_jvm_max_heap_size = '2G',
   String          $version                  = 'latest',
   Boolean         $setup_puppetdb           = false,
   Boolean         $setup_puppetboard        = false,
