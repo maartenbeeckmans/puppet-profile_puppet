@@ -9,7 +9,7 @@ class profile_puppetmaster (
   String          $version                  = 'latest',
   Boolean         $setup_puppetdb           = false,
   Boolean         $setup_puppetboard        = false,
-  Boolean         $manage_firewall          = true,
+  Boolean         $manage_firewall_entry    = true,
 ) {
   # @TODO implement prometheus/graphite metrics
   if $setup_puppetdb {
@@ -33,7 +33,7 @@ class profile_puppetmaster (
     server_jvm_min_heap_size => $server_jvm_min_heap_size,
     server_jvm_max_heap_size => $server_jvm_max_heap_size,
   }
-  if $manage_firewall {
+  if $manage_firewall_entry {
     firewall { '08140 allow puppetmaster':
       dport  => 8140,
       action => 'accept',
