@@ -43,5 +43,5 @@ class profile_puppetmaster (
   if $setup_puppetboard {
     include profile_puppetmaster::puppetboard
   }
-  create_resources('vscrepo', $repositories)
+  create_resources('vcsrepo', $repositories)
 }
