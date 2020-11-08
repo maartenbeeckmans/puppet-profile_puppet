@@ -10,6 +10,7 @@ class profile_puppetmaster (
   Boolean         $setup_puppetdb           = false,
   Boolean         $setup_puppetboard        = false,
   Boolean         $manage_firewall_entry    = true,
+  Hash            $repositories             = {},
 ) {
   # @TODO implement prometheus/graphite metrics
   if $setup_puppetdb {
@@ -42,4 +43,5 @@ class profile_puppetmaster (
   if $setup_puppetboard {
     include profile_puppetmaster::puppetboard
   }
+  create_resources('vscrepo', $repositories)
 }
