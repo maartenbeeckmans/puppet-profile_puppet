@@ -2,9 +2,9 @@
 #
 #
 class profile_puppetmaster::puppetboard (
-  Boolean       $manage_sd_service     = false,
-  String        $sd_service_name       = 'puppetboard',
-  Array         $sd_service_tags       = [],
+  Boolean $manage_sd_service = $::profile_puppetmaster::manage_sd_service,
+  String  $sd_service_name   = $::profile_puppetmaster::sd_service_name,
+  Array   $sd_service_tags   = $::profile_puppetmaster::sd_service_tags,
 ) {
   class { 'puppetboard':
     manage_git          => true,
@@ -18,7 +18,10 @@ class profile_puppetmaster::puppetboard (
     purge_configs => true,
   }
   $wsgi = $facts['os']['family'] ? {
-    'Debian' => {package_name => "libapache2-mod-wsgi-py3", mod_path => "/usr/lib/apache2/modules/mod_wsgi.so"},
+    'Debian' => {
+      package_name => 'libapache2-mod-wsgi-py3',
+      mod_path     => '/usr/lib/apache2/modules/mod_wsgi.so'
+    },
     default  => {},
   }
   class { 'apache::mod::wsgi':

@@ -1,0 +1,13 @@
+---
+profile_puppetmaster::autosign: false
+profile_puppetmaster::autosign_entries: []
+profile_puppetmaster::server_jvm_min_heap_size: '2G'
+profile_puppetmaster::server_jvm_max_heap_size: '2G'
+profile_puppetmaster::version: 'latest'
+profile_puppetmaster::setup_puppetdb: false
+profile_puppetmaster::puppetdb_host: "%{facts.networking.fqdn}"
+profile_puppetmaster::setup_puppetboard: false
+profile_puppetmaster::manage_sd_service: false
+profile_puppetmaster::sd_service_name: 'puppetboard'
+profile_puppetmaster::sd_service_tags: []
+profile_puppetmaster::manage_firewall_entry: true
