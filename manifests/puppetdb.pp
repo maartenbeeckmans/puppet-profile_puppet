@@ -2,9 +2,10 @@
 #
 #
 class profile_puppetmaster::puppetdb (
-  String                  $puppetdb_host         = $::profile_puppetmaster::puppetdb_host,
-  Optional[Array[String]] $puppetdb_allowed_ips  = $::profile_puppetmaster::puppetdb_allowed_ips,
-  Boolean                 $manage_firewall_entry = $::profile_puppetmaster::manage_firewall_entry,
+  String                  $puppetdb_host            = $::profile_puppetmaster::puppetdb_host,
+  Optional[Array[String]] $puppetdb_allowed_ips     = $::profile_puppetmaster::puppetdb_allowed_ips,
+  Boolean                 $manage_firewall_entry    = $::profile_puppetmaster::manage_firewall_entry,
+  Boolean                 $manage_puppetdb_exporter = $::profile_puppetmaster::manage_puppetdb_exporter,
   ) {
   # Configure puppetdb and postgres
   class { 'puppetdb':
@@ -46,5 +47,9 @@ class profile_puppetmaster::puppetdb (
         }
       }
     }
+  }
+
+  if $manage_puppetdb_exporter {
+    include profile_prometheus::puppetdb_exporter
   }
 }

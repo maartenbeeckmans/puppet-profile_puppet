@@ -9,6 +9,7 @@ class profile_puppetmaster (
   String                  $version,
   Boolean                 $setup_puppetdb,
   String                  $puppetdb_host,
+  Boolean                 $manage_puppetdb_exporter,
   Boolean                 $setup_puppetboard,
   Boolean                 $manage_sd_service,
   String                  $sd_service_name,
