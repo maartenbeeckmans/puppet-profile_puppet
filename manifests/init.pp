@@ -11,9 +11,6 @@ class profile_puppetmaster (
   String                  $puppetdb_host,
   Boolean                 $manage_puppetdb_exporter,
   Boolean                 $setup_puppetboard,
-  Boolean                 $manage_sd_service,
-  String                  $sd_service_name,
-  Array                   $sd_service_tags,
   Boolean                 $manage_firewall_entry,
   Optional[Array[String]] $puppetdb_allowed_ips     = undef,
 ) {
@@ -44,8 +41,5 @@ class profile_puppetmaster (
       dport  => 8140,
       action => 'accept',
     }
-  }
-  if $setup_puppetboard {
-    include profile_puppetmaster::puppetboard
   }
 }
