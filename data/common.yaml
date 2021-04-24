@@ -7,4 +7,5 @@ profile_puppetmaster::version: 'latest'
 profile_puppetmaster::setup_puppetdb: false
 profile_puppetmaster::puppetdb_host: "%{facts.networking.fqdn}"
 profile_puppetmaster::manage_puppetdb_exporter: true
+profile_puppetmaster::manage_puppet_reporter: true
 profile_puppetmaster::manage_firewall_entry: true

@@ -10,18 +10,33 @@ class profile_puppetmaster (
   Boolean                 $setup_puppetdb,
   String                  $puppetdb_host,
   Boolean                 $manage_puppetdb_exporter,
+  Boolean                 $manage_puppet_reporter,
   Boolean                 $setup_puppetboard,
   Boolean                 $manage_firewall_entry,
   Optional[Array[String]] $puppetdb_allowed_ips     = undef,
 ) {
-  # @TODO implement prometheus/graphite metrics
   if $setup_puppetdb {
     $server_storeconfigs = true
-    $server_reports = 'puppetdb'
+    if $manage_puppet_reporter {
+      $server_reports = 'puppetdb,prometheus'
+    } else {
+      $server_reports = 'puppetdb'
+    }
     include profile_puppetmaster::puppetdb
   } else {
     $server_storeconfigs = false
-    $server_reports = 'store'
+    if $manage_puppet_reporter {
+      $server_reports = 'store,prometheus'
+    } else {
+      $server_reports = 'store'
+    }
+  }
+  if $manage_puppet_reporter {
+    file { '/etc/puppetlabs/puppet/prometheus.yaml'
+      content => '---
+      /var/lib/node_exporter/textfile
+      ...',
+    }
   }
   class { 'puppet':
     server                   => true,
