@@ -32,10 +32,8 @@ class profile_puppetmaster (
     }
   }
   if $manage_puppet_reporter {
-    file { '/etc/puppetlabs/puppet/prometheus.yaml'
-      content => '---
-      /var/lib/node_exporter/textfile
-      ...',
+    file { '/etc/puppetlabs/puppet/prometheus.yaml':
+      source => 'puppet:///modules/profile_puppetmaster/prometheus.yaml',
     }
   }
   class { 'puppet':
