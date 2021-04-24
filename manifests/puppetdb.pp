@@ -7,22 +7,15 @@ class profile_puppetmaster::puppetdb (
   Boolean                 $manage_firewall_entry    = $::profile_puppetmaster::manage_firewall_entry,
   Boolean                 $manage_puppetdb_exporter = $::profile_puppetmaster::manage_puppetdb_exporter,
   ) {
-  # Configure puppetdb and postgres
-  class { 'puppetdb':
+  class { 'puppetdb::server':
     manage_package_repo => true,
     java_args           => {
       '-Xmx' => '1024m',
     },
     listen_address      => '0.0.0.0',
     manage_firewall     => 'false',
-    node_ttl            => '30d',
-    node_purge_ttl      => '30d',
   }
 
-  # Configure the puppetmaster to use puppetdb
-  class {'puppet::server::puppetdb':
-    server => $puppetdb_host,
-  }
 
   if $manage_firewall_entry {
     firewall { '18080 puppetdb http reject':
@@ -48,8 +41,29 @@ class profile_puppetmaster::puppetdb (
       }
     }
   }
+  
+  if $install_client_tools {
+    package { 'puppetdb_cli':
+      ensure          => installed,
+      install_options => ['--binddir', '/opt/puppetlabs/bin'],
+      provider        => puppet_gem,
+    }
+  }
 
   if $manage_puppetdb_exporter {
     include profile_prometheus::puppetdb_exporter
+  }
+
+  if $manage_sd_service {
+    consul::service { $sd_service_name:
+      checks => [
+        {
+          http     => "http://${facts[networking][ip]}:8081",
+          interval => '10s'
+        }
+      ],
+      port   => 8081,
+      tags   => $sd_service_tags,
+    }
   }
 }

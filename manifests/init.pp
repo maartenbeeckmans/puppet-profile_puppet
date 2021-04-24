@@ -2,57 +2,64 @@
 #
 #
 class profile_puppetmaster (
-  Boolean                 $autosign,
-  Array[String]           $autosign_entries,
-  String                  $server_jvm_min_heap_size,
-  String                  $server_jvm_max_heap_size,
-  String                  $version,
-  Boolean                 $setup_puppetdb,
-  String                  $puppetdb_host,
   Boolean                 $manage_puppetdb_exporter,
-  Boolean                 $manage_puppet_reporter,
-  Boolean                 $setup_puppetboard,
-  Boolean                 $manage_firewall_entry,
-  Optional[Array[String]] $puppetdb_allowed_ips     = undef,
+  Optional[Array[String]] $puppetdb_allowed_ips,
+
+  # profile_puppet::server
+  #
+  Boolean          $server,
+  String           $version,
+  Optional[String] $puppetmaster,
+  Boolean          $use_srv_records,
+  Optional[String] $srv_domain,
+  Boolean          $autosign,
+  Array[String]    $autosign_entries,
+  String           $server_jvm_min_heap_size,
+  String           $server_jvm_max_heap_size,
+
+  String           $puppetdb_host,
+  Boolean          $install_vault,
+  Boolean          $manage_firewall_entry,
+  Boolean          $manage_puppet_reporter,
+  Boolean          $manage_sd_service        = lookup('manage_sd_service', Boolean, first, true),
 ) {
-  if $setup_puppetdb {
-    $server_storeconfigs = true
+  if $puppetdb_host {
+    $_server_storeconfigs = true
     if $manage_puppet_reporter {
-      $server_reports = 'puppetdb,prometheus'
+      $_server_reports = 'puppetdb,prometheus'
     } else {
-      $server_reports = 'puppetdb'
+      $_server_reports = 'puppetdb'
     }
-    include profile_puppetmaster::puppetdb
   } else {
-    $server_storeconfigs = false
+    $_server_storeconfigs = false
     if $manage_puppet_reporter {
-      $server_reports = 'store,prometheus'
+      $_server_reports = 'store,prometheus'
     } else {
-      $server_reports = 'store'
+      $_server_reports = 'store'
     }
   }
-  if $manage_puppet_reporter {
-    file { '/etc/puppetlabs/puppet/prometheus.yaml':
-      source => 'puppet:///modules/profile_puppetmaster/prometheus.yaml',
-    }
-  }
+
   class { 'puppet':
-    server                   => true,
+    agent                    => true,
+    server                   => $server,
+    version                  => $version,
+    show_diff                => true,
+    puppetmaster             => $puppetmaster,
+    use_srv_records          => $use_srv_records,
+    srv_domain               => $srv_domain,
     autosign                 => $autosign,
     autosign_entries         => $autosign_entries,
+    server_storeconfigs      => $_server_storeconfigs,
+    server_reports           => $_server_reports,
     server_foreman           => false,
-    version                  => $version,
-    server_multithreaded     => true,
-    server_storeconfigs      => $server_storeconfigs,
-    server_reports           => $server_reports,
     server_external_nodes    => '',
+    server_multithreaded     => true,
     server_jvm_min_heap_size => $server_jvm_min_heap_size,
     server_jvm_max_heap_size => $server_jvm_max_heap_size,
+    runmode                  => 'systemd.timer',
   }
-  if $manage_firewall_entry {
-    firewall { '08140 allow puppetmaster':
-      dport  => 8140,
-      action => 'accept',
-    }
+
+  if $server {
+    include profile_puppet::server
   }
 }

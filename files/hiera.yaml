@@ -1,0 +1,14 @@
+---
+version: 5
+defaults:
+  data_hash: yaml_data
+  datadir: /etc/puppetlabs/code/hieradata
+
+hierarchy:
+  - name: "per-node data"
+    path: "clients/%{::environment}/%{facts.networking.hostname}.yaml"
+  - name: "per-environment data"
+    path: "environments/%{::environment}.yaml"
+  - name: "common data"
+    path: "common.yaml"
+...
