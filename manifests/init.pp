@@ -11,7 +11,7 @@ class profile_puppet (
   Array[String]           $autosign_entries,
   String                  $server_jvm_min_heap_size,
   String                  $server_jvm_max_heap_size,
-  String                  $puppetdb_host,
+  Optional[String]        $puppetdb_host,
   Boolean                 $install_vault,
   Boolean                 $manage_firewall_entry,
   Boolean                 $manage_puppet_reporter,
