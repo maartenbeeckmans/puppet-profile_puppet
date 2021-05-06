@@ -14,7 +14,7 @@ class profile_puppet::server (
     mode   => '0644',
     owner  => 'puppet',
     group  => 'puppet',
-    source => 'puppet:///modules/profile_puppetmaster/hiera.yaml',
+    source => 'puppet:///modules/profile_puppet/hiera.yaml',
   }
 
   if $puppetdb_host {
@@ -40,7 +40,7 @@ class profile_puppet::server (
 
   if $manage_puppet_reporter {
     file { '/etc/puppetlabs/puppet/prometheus.yaml':
-      source => 'puppet:///modules/profile_puppetmaster/prometheus.yaml',
+      source => 'puppet:///modules/profile_puppet/prometheus.yaml',
     }
   }
 

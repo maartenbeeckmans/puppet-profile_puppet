@@ -19,14 +19,13 @@ class profile_puppet::puppetdb (
   Array[String]           $sd_service_tags          = $::profile_puppet::puppetdb_sd_service_tags,
   ) {
   class { 'puppetdb::server':
-    manage_package_repo => true,
     java_args           => {
       '-Xmx' => '1024m',
     },
     manage_firewall     => 'false',
     database_host       => $database_host,
     database_name       => $database_name,
-    database_user       => $database_user,
+    database_username   => $database_user,
     database_password   => $database_password,
     listen_address      => $listen_address,
     ssl_listen_address  => $ssl_listen_address,
@@ -61,7 +60,6 @@ class profile_puppet::puppetdb (
   if $install_client_tools {
     package { 'puppetdb_cli':
       ensure          => installed,
-      install_options => ['--binddir', '/opt/puppetlabs/bin'],
       provider        => puppet_gem,
     }
   }
