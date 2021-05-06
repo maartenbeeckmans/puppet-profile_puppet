@@ -1,19 +1,35 @@
 #
 #
 #
-class profile_puppetmaster::puppetdb (
-  String                  $puppetdb_host            = $::profile_puppetmaster::puppetdb_host,
-  Optional[Array[String]] $puppetdb_allowed_ips     = $::profile_puppetmaster::puppetdb_allowed_ips,
-  Boolean                 $manage_firewall_entry    = $::profile_puppetmaster::manage_firewall_entry,
-  Boolean                 $manage_puppetdb_exporter = $::profile_puppetmaster::manage_puppetdb_exporter,
+class profile_puppet::puppetdb (
+  Optional[Array[String]] $puppetdb_allowed_ips     = $::profile_puppet::puppetdb_allowed_ips,
+  Boolean                 $manage_firewall_entry    = $::profile_puppet::manage_firewall_entry,
+  Boolean                 $manage_puppetdb_exporter = $::profile_puppet::manage_puppetdb_exporter,
+  Boolean                 $manage_database          = $::profile_puppet::puppetdb_manage_database,
+  String                  $database_host            = $::profile_puppet::puppetdb_database_host,
+  String                  $database_name            = $::profile_puppet::puppetdb_database_name,
+  String                  $database_user            = $::profile_puppet::puppetdb_database_user,
+  String                  $database_password        = $::profile_puppet::puppetdb_database_password,
+  String                  $database_grant           = $::profile_puppet::puppetdb_database_grant,
+  String                  $listen_address           = $::profile_puppet::puppetdb_listen_address,
+  String                  $ssl_listen_address       = $::profile_puppet::puppetdb_ssl_listen_address,
+  Boolean                 $install_client_tools     = $::profile_puppet::puppetdb_install_client_tools,
+  Boolean                 $manage_sd_service        = $::profile_puppet::manage_sd_service,
+  String                  $sd_service_name          = $::profile_puppet::puppetdb_sd_service_name,
+  Array[String]           $sd_service_tags          = $::profile_puppet::puppetdb_sd_service_tags,
   ) {
   class { 'puppetdb::server':
     manage_package_repo => true,
     java_args           => {
       '-Xmx' => '1024m',
     },
-    listen_address      => '0.0.0.0',
     manage_firewall     => 'false',
+    database_host       => $database_host,
+    database_name       => $database_name,
+    database_user       => $database_user,
+    database_password   => $database_password,
+    listen_address      => $listen_address,
+    ssl_listen_address  => $ssl_listen_address,
   }
 
 
@@ -41,7 +57,7 @@ class profile_puppetmaster::puppetdb (
       }
     }
   }
-  
+
   if $install_client_tools {
     package { 'puppetdb_cli':
       ensure          => installed,
@@ -52,6 +68,16 @@ class profile_puppetmaster::puppetdb (
 
   if $manage_puppetdb_exporter {
     include profile_prometheus::puppetdb_exporter
+  }
+
+  if $manage_database {
+    $_database_password = postgresql_password($database_user, $database_password)
+
+    postgresql::server::db { $database_name:
+      user     => $database_user,
+      password => $_database_password,
+      grant    => 'ALL',
+    }
   }
 
   if $manage_sd_service {

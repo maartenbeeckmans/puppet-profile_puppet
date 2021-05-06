@@ -1,27 +1,36 @@
 #
 #
 #
-class profile_puppetmaster (
-  Boolean                 $manage_puppetdb_exporter,
+class profile_puppet (
+  Boolean                 $server,
+  String                  $version,
+  Optional[String]        $puppetmaster,
+  Boolean                 $use_srv_records,
+  Optional[String]        $srv_domain,
+  Boolean                 $autosign,
+  Array[String]           $autosign_entries,
+  String                  $server_jvm_min_heap_size,
+  String                  $server_jvm_max_heap_size,
+  String                  $puppetdb_host,
+  Boolean                 $install_vault,
+  Boolean                 $manage_firewall_entry,
+  Boolean                 $manage_puppet_reporter,
+  String                  $server_sd_service_name,
+  Array[String]           $server_sd_service_tags,
   Optional[Array[String]] $puppetdb_allowed_ips,
-
-  # profile_puppet::server
-  #
-  Boolean          $server,
-  String           $version,
-  Optional[String] $puppetmaster,
-  Boolean          $use_srv_records,
-  Optional[String] $srv_domain,
-  Boolean          $autosign,
-  Array[String]    $autosign_entries,
-  String           $server_jvm_min_heap_size,
-  String           $server_jvm_max_heap_size,
-
-  String           $puppetdb_host,
-  Boolean          $install_vault,
-  Boolean          $manage_firewall_entry,
-  Boolean          $manage_puppet_reporter,
-  Boolean          $manage_sd_service        = lookup('manage_sd_service', Boolean, first, true),
+  Boolean                 $manage_puppetdb_exporter,
+  Boolean                 $puppetdb_manage_database,
+  String                  $puppetdb_database_host,
+  String                  $puppetdb_database_name,
+  String                  $puppetdb_database_user,
+  String                  $puppetdb_database_password,
+  String                  $puppetdb_database_grant,
+  String                  $puppetdb_listen_address,
+  String                  $puppetdb_ssl_listen_address,
+  Boolean                 $puppetdb_install_client_tools,
+  String                  $puppetdb_sd_service_name,
+  Array[String]           $puppetdb_sd_service_tags,
+  Boolean                 $manage_sd_service        = lookup('manage_sd_service', Boolean, first, true),
 ) {
   if $puppetdb_host {
     $_server_storeconfigs = true

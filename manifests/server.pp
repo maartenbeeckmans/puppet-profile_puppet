@@ -1,14 +1,14 @@
 #
 #
 #
-class profile_puppetmaster::puppet (
-  String        $puppetdb_host          = $::profile_puppet::puppetdb,
-  Boolean       $install_vault          = $::profile_puppet::puppetdb,
+class profile_puppet::server (
+  String        $puppetdb_host          = $::profile_puppet::puppetdb_host,
+  Boolean       $install_vault          = $::profile_puppet::install_vault,
   Boolean       $manage_firewall_entry  = $::profile_puppet::manage_firewall_entry,
   Boolean       $manage_puppet_reporter = $::profile_puppet::manage_puppet_reporter,
   Boolean       $manage_sd_service      = $::profile_puppet::manage_sd_service,
-  String        $sd_service_name        = 'puppetserver',
-  Array[String] $sd_service_tags        = [],
+  String        $sd_service_name        = $::profile_puppet::server_sd_service_name,
+  Array[String] $sd_service_tags        = $::profile_puppet::server_sd_service_tags,
 ) {
   file { '/etc/puppetlabs/puppet/hiera.yaml':
     mode   => '0644',
@@ -22,7 +22,7 @@ class profile_puppetmaster::puppet (
       server => $puppetdb_host,
     }
   }
-  
+
   if $install_vault {
     package { 'hiera-vault':
       ensure   => present,
@@ -43,7 +43,7 @@ class profile_puppetmaster::puppet (
       source => 'puppet:///modules/profile_puppetmaster/prometheus.yaml',
     }
   }
-  
+
   if $manage_sd_service {
     consul::service { $sd_service_name:
       checks => [
