@@ -2,10 +2,12 @@
 profile_puppet::server: false
 profile_puppet::version: 'latest'
 profile_puppet::puppetmaster: 'puppet'
+profile_puppet::ca_server: ~
 profile_puppet::use_srv_records: false
 profile_puppet::srv_domain: ~
 profile_puppet::autosign: false
 profile_puppet::autosign_entries: []
+profile_puppet::server_ca: true
 profile_puppet::server_jvm_min_heap_size: '2G'
 profile_puppet::server_jvm_max_heap_size: '2G'
 profile_puppet::puppetdb_host: ~
