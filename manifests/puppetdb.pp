@@ -19,9 +19,6 @@ class profile_puppet::puppetdb (
   Array[String]           $sd_service_tags          = $::profile_puppet::puppetdb_sd_service_tags,
   ) {
   class { 'puppetdb::server':
-    java_args           => {
-      '-Xmx' => '1024m',
-    },
     manage_firewall     => 'false',
     database_host       => $database_host,
     database_name       => $database_name,
