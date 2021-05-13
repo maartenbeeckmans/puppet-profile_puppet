@@ -79,11 +79,11 @@ class profile_puppet::puppetdb (
     consul::service { $sd_service_name:
       checks => [
         {
-          http     => "http://${facts[networking][ip]}:8081",
+          http     => "http://${facts[networking][ip]}:8080/pdb/query/v4/environments",
           interval => '10s'
         }
       ],
-      port   => 8081,
+      port   => 8080,
       tags   => $sd_service_tags,
     }
   }
