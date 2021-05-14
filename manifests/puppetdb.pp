@@ -19,13 +19,13 @@ class profile_puppet::puppetdb (
   Array[String]           $sd_service_tags          = $::profile_puppet::puppetdb_sd_service_tags,
   ) {
   class { 'puppetdb::server':
-    manage_firewall     => 'false',
-    database_host       => $database_host,
-    database_name       => $database_name,
-    database_username   => $database_user,
-    database_password   => $database_password,
-    listen_address      => $listen_address,
-    ssl_listen_address  => $ssl_listen_address,
+    manage_firewall    => 'false',
+    database_host      => $database_host,
+    database_name      => $database_name,
+    database_username  => $database_user,
+    database_password  => $database_password,
+    listen_address     => $listen_address,
+    ssl_listen_address => $ssl_listen_address,
   }
 
 
@@ -56,8 +56,8 @@ class profile_puppet::puppetdb (
 
   if $install_client_tools {
     package { 'puppetdb_cli':
-      ensure          => installed,
-      provider        => puppet_gem,
+      ensure   => installed,
+      provider => puppet_gem,
     }
   }
 
@@ -79,7 +79,7 @@ class profile_puppet::puppetdb (
     consul::service { $sd_service_name:
       checks => [
         {
-          http     => "http://${facts[networking][ip]}:8080/pdb/query/v4/environments",
+          http     => "http://${facts[networking][ip]}:8080/status/v1/services/puppetdb-status",
           interval => '10s'
         }
       ],
