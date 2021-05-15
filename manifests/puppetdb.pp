@@ -66,12 +66,9 @@ class profile_puppet::puppetdb (
   }
 
   if $manage_database {
-    $_database_password = postgresql_password($database_user, $database_password)
-
-    postgresql::server::db { $database_name:
+    profile_postgres::database { $database_name:
       user     => $database_user,
-      password => $_database_password,
-      grant    => 'ALL',
+      password => $database_password,
     }
   }
 
