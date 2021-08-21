@@ -17,6 +17,20 @@ class profile_puppet::server (
     source => 'puppet:///modules/profile_puppet/hiera.yaml',
   }
 
+  $_environments = puppetdb_query('environments {}')
+
+  $_environments.each | Hash $env | {
+    $_env_cache_config = {
+      'environment' => $env['name']
+    }
+    
+    file { "/usr/local/bin/clean_pupperserver_env_cache_${env['name']}.sh":
+      ensure  => present,
+      mode    => '0755',
+      content => epp("${module_name}/clean_puppetserver_env_cache.sh.epp", $_env_cache_config),
+    }
+  }
+
   if $puppetdb_host {
     class { 'puppet::server::puppetdb':
       server => $puppetdb_host,

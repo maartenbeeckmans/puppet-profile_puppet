@@ -10,8 +10,8 @@ class profile_puppet (
   Optional[String]        $srv_domain,
   Boolean                 $autosign,
   Array[String]           $autosign_entries,
-  String                  $server_jvm_min_heap_size,
-  String                  $server_jvm_max_heap_size,
+  Optional[String]        $server_jvm_min_heap_size,
+  Optional[String]        $server_jvm_max_heap_size,
   Optional[String]        $puppetdb_host,
   Boolean                 $install_vault,
   Boolean                 $manage_firewall_entry,
@@ -50,31 +50,47 @@ class profile_puppet (
     }
   }
 
+  if $server_jvm_min_heap_size and $server_jvm_max_heap_size {
+    $_server_jvm_min_heap_size = $server_jvm_min_heap_size
+    $_server_jvm_max_heap_size = $server_jvm_max_heap_size
+  } else {
+    $_server_jvm_min_heap_size = "${1024 + $facts['processors']['count'] * 512}m"
+    $_server_jvm_max_heap_size = "${1024 + $facts['processors']['count'] * 512}m"
+  }
+
   class { 'puppet':
-    agent                      => true,
-    server                     => $server,
-    version                    => $version,
-    show_diff                  => true,
-    puppetmaster               => $puppetmaster,
-    ca_server                  => $ca_server,
-    use_srv_records            => $use_srv_records,
-    srv_domain                 => $srv_domain,
-    autosign                   => $autosign,
-    autosign_entries           => $autosign_entries,
-    dns_alt_names              => split($facts['dns_alt_names'], /,/),
-    server_common_modules_path => [],
-    server_environments_owner  => 'root',
-    server_environments_group  => 'root',
-    server_ca                  => $server_ca,
-    server_storeconfigs        => $_server_storeconfigs,
-    server_reports             => $_server_reports,
-    server_ca_allow_sans       => true,
-    server_foreman             => false,
-    server_external_nodes      => '',
-    server_multithreaded       => true,
-    server_jvm_min_heap_size   => $server_jvm_min_heap_size,
-    server_jvm_max_heap_size   => $server_jvm_max_heap_size,
-    runmode                    => 'systemd.timer',
+    agent                                  => true,
+    server                                 => $server,
+    version                                => $version,
+    show_diff                              => true,
+    puppetmaster                           => $puppetmaster,
+    ca_server                              => $ca_server,
+    use_srv_records                        => $use_srv_records,
+    srv_domain                             => $srv_domain,
+    autosign                               => $autosign,
+    autosign_entries                       => $autosign_entries,
+    dns_alt_names                          => split($facts['dns_alt_names'], /,/),
+    splay                                  => true,
+    splaylimit                             => '1800s',
+    server_common_modules_path             => [],
+    server_environments_owner              => 'root',
+    server_environments_group              => 'root',
+    server_ca                              => $server_ca,
+    server_storeconfigs                    => $_server_storeconfigs,
+    server_reports                         => $_server_reports,
+    server_ca_allow_sans                   => true,
+    server_foreman                         => false,
+    server_external_nodes                  => '',
+    server_multithreaded                   => true,
+    server_jvm_min_heap_size               => $_server_jvm_min_heap_size,
+    server_jvm_max_heap_size               => $_server_jvm_max_heap_size,
+    server_jvm_extra_args                  => [
+      '-XX:ReservedCodeCacheSize=512m',
+      ' -Djruby.logger.class=com.puppetlabs.jruby_utils.jruby.Slf4jLogger'
+    ],
+    server_environment_class_cache_enabled => true,
+    server_environment_timeout             => 'unlimited',
+    runmode                                => 'systemd.timer',
   }
 
   if $server {

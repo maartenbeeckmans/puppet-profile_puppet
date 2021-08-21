@@ -8,8 +8,8 @@ profile_puppet::srv_domain: ~
 profile_puppet::autosign: false
 profile_puppet::autosign_entries: []
 profile_puppet::server_ca: true
-profile_puppet::server_jvm_min_heap_size: '2G'
-profile_puppet::server_jvm_max_heap_size: '2G'
+profile_puppet::server_jvm_min_heap_size: ~
+profile_puppet::server_jvm_max_heap_size: ~
 profile_puppet::puppetdb_host: ~
 profile_puppet::install_vault: false
 profile_puppet::manage_firewall_entry: true
