@@ -23,7 +23,7 @@ hierarchy:
     path: "os/family/%{facts.os.name}.yaml"
   - name: "per-os-family configuration"
     path: "os/family/%{facts.os.family}.yaml"
-  - name: "per-os-family configuration"
+  - name: "per-os-hardware configuration"
     path: "os/family/%{facts.os.hardware}.yaml"
   - name: "common configuration"
     path: "common.yaml"
