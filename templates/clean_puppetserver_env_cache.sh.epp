@@ -1,0 +1,12 @@
+<%- | String $environment | -%>
+#!/bin/bash
+
+echo "Cleaning cache for environment <%= $environment -%>"
+
+/usr/bin/curl -kvi \
+  -X DELETE \
+  --cacert <%= $facts['extlib__puppet_config']['main']['localcacert'] -%> \
+  --cert <%= $facts['extlib__puppet_config']['main']['hostcert'] -%>  \
+  --key <%= $facts['extlib__puppet_config']['main']['hostprivkey'] -%> \
+  --cacert /etc/puppetlabs/puppet/ssl/ca/ca_crt.pem \
+  https://127.0.0.1:8140/puppet-admin-api/v1/environment-cache?environment=<%= $environment -%>
