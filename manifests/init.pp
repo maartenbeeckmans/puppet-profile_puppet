@@ -90,6 +90,7 @@ class profile_puppet (
     ],
     server_environment_class_cache_enabled => true,
     server_environment_timeout             => 'unlimited',
+    server_strict_variables                => true,
     runmode                                => 'systemd.timer',
   }
 
